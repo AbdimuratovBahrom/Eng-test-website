@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест по английскому языку</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div id="one" class="section">
+        <h1>Тест по английскому языку</h1>
+        <input type="text" id="userName" placeholder="Введите ваше имя">
+        <select id="level">
+            <option value="">Выберите уровень</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        </select>
+        <select id="sublevel" disabled>
+            <option value="">Выберите подуровень</option>
+        </select>
+        <button id="startQuizBtn">Начать тест</button>
+        <a href="#" id="resultsLink">Результаты</a> | 
+        <a href="#" id="topLink">Top</a>
+    </div>
+
+    <div id="two" class="section hidden">
+        <p id="question-number"></p>
+        <p id="question"></p>
+        <div id="options"></div>
+    </div>
+
+    <div id="three" class="section hidden">
+        <p id="score"></p>
+        <input type="text" id="searchName" placeholder="Поиск по имени" style="margin: 10px 0;">
+        <div id="resultsList"></div> <!-- Новый контейнер для результатов -->
+        <button id="showLeaderboardBtn">Показать рейтинг</button>
+        <button id="backToStartBtn">Вернуться</button>
+    </div>
+
+    <div id="leaderboard" class="hidden">
+        <div class="results"><h2>Рейтинг</h2></div>
+        <div id="top10-list" class="top-container"></div>
+        <div class="back_to"><button id="backToStartBtn2">Вернуться</button></div>
+    </div>
+    
+
+    <script src="assets/js/englishQuizQuestions.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

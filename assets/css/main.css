@@ -1,0 +1,164 @@
+.hidden {
+  display: none;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  color:rgb(86, 224, 18) ;
+  border: none;
+  border-radius: 5px;
+  border: solid 1px rgb(86, 224, 18);
+}
+
+button:hover {
+  background-color: #f8f8f8;
+}
+
+input[type="text"], select {
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.leaderboard-section {
+  margin-top: 20px;
+}
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Существующие стили остаются без изменений */
+.section {
+    text-align: center;
+    padding: 20px;
+}
+
+.option-btn {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    text-align: left;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+}
+a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* Стиль для поля Top */
+.top-container {
+    width: 30%;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 90vh; /* Увеличено для тестирования */
+}
+
+.top-container h3 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.top-container div {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* Подсветка первых трех мест */
+.top-container .place-1 {
+    color: #FFD700; /* Золото для 1-го места */
+    padding: 2px 5px;
+    border-radius: 3px;
+   
+}
+
+.top-container .place-2 {
+    color: #C0C0C0; /* Серебро для 2-го места */
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.top-container .place-3 {
+    color: #CD7F32; /* Бронза для 3-го места */
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.top-container hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+
+    
+}
+#resultsList {
+    margin: 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#resultsList div {
+    margin: 5px 0;
+    padding: 5px;
+}
+
+#searchName {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.results h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.back_to button 
+
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+  display: block;
+  background-color: #007BFF;
+  color: white;
+}
+
+/* ... (предыдущие стили остаются без изменений) */
+
