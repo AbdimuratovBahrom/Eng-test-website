@@ -34,15 +34,42 @@ let userName = '';
 let userLevel = '';
 let userSublevel = '';
 
-// --- Инициализация вопросов ---
-if (typeof window.englishQuizQuestions === 'undefined') {
-    console.error('Вопросы не загружены. Проверьте импорт englishQuizQuestions.js');
-    window.englishQuizQuestions = {}; // Fallback
+// --- Firebase ---
+let database, resultsRef, push, onValue;
+
+// Ждем инициализации Firebase
+function waitForFirebase() {
+    return new Promise((resolve) => {
+        const checkFirebase = () => {
+            if (window.database && window.resultsRef && window.push && window.onValue) {
+                database = window.database;
+                resultsRef = window.resultsRef;
+                push = window.push;
+                onValue = window.onValue;
+                console.log('Firebase доступен:', { database, resultsRef });
+                resolve();
+            } else {
+                console.log('Ожидание Firebase...');
+                setTimeout(checkFirebase, 100); // Проверяем каждые 100 мс
+            }
+        };
+        checkFirebase();
+    });
 }
 
-// --- Firebase ---
-const database = firebase.database();
-const resultsRef = database.ref('results');
+// Инициализация после загрузки страницы
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await waitForFirebase();
+        if (!window.englishQuizQuestions || Object.keys(window.englishQuizQuestions).length === 0) {
+            console.error('Вопросы не загружены. Проверьте импорт englishQuizQuestions.js');
+            window.englishQuizQuestions = {}; // Fallback
+        }
+    } catch (error) {
+        console.error('Ошибка инициализации Firebase:', error);
+        alert('Ошибка подключения к базе данных. Обновите страницу или обратитесь к разработчику.');
+    }
+});
 
 // --- Выбор подуровня ---
 levelSelect.addEventListener('change', function() {
@@ -166,6 +193,11 @@ function showResults() {
 }
 
 function saveResult(name, level, sublevel, score) {
+    if (!push || !resultsRef) {
+        console.error('Firebase push или resultsRef не доступен');
+        alert('Ошибка сохранения результата. Обратитесь к разработчику.');
+        return;
+    }
     const result = {
         name: name,
         level: level,
@@ -173,13 +205,18 @@ function saveResult(name, level, sublevel, score) {
         score: score,
         date: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Yekaterinburg' })
     };
-    resultsRef.push(result);
+    push(resultsRef, result);
 }
 
 function displayResultsByName() {
+    if (!onValue || !resultsRef) {
+        console.error('Firebase onValue или resultsRef не доступен');
+        resultsList.innerHTML = '<p>Ошибка загрузки результатов</p>';
+        return;
+    }
     resultsList.innerHTML = '';
     const searchTerm = searchName.value.trim().toLowerCase();
-    resultsRef.once('value', (snapshot) => {
+    onValue(resultsRef, (snapshot) => {
         const allResults = snapshot.val() || {};
         let hasResults = false;
         for (let key in sublevels) {
@@ -222,8 +259,13 @@ topLink.addEventListener('click', function(e) {
 });
 
 function showAllLeaderboard() {
+    if (!onValue || !resultsRef) {
+        console.error('Firebase onValue или resultsRef не доступен');
+        top10List.innerHTML = '<p>Ошибка загрузки рейтинга</p>';
+        return;
+    }
     top10List.innerHTML = '';
-    resultsRef.once('value', (snapshot) => {
+    onValue(resultsRef, (snapshot) => {
         const allResults = snapshot.val() || {};
         const allLeaderboards = {};
 
@@ -302,10 +344,4 @@ backToStartBtn2.addEventListener('click', function() {
     levelSelect.value = '';
     sublevelSelect.innerHTML = '<option value="">Выберите подуровень</option>';
     sublevelSelect.disabled = true;
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (!window.englishQuizQuestions || Object.keys(window.englishQuizQuestions).length === 0) {
-        console.error('Не удалось загрузить вопросы. Проверьте путь к englishQuizQuestions.js');
-    }
 });

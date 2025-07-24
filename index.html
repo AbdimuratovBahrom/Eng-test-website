@@ -33,48 +33,53 @@
     <div id="three" class="section hidden">
         <p id="score"></p>
         <input type="text" id="searchName" placeholder="Поиск по имени" style="margin: 10px 0;">
-        <div id="resultsList"></div> <!-- Новый контейнер для результатов -->
-        <button id="showLeaderboardBtn">Показать рейтинг</button>
-        <button id="backToStartBtn">Вернуться</button>
+        <div id="resultsList"></div>
+        <div class="result_btn"><button id="showLeaderboardBtn">Показать рейтинг</button></div>
+       <div class="back_from_result"> <button id="backToStartBtn">Вернуться</button></div>
     </div>
 
     <div id="leaderboard" class="hidden">
-        <div class="results"><h2>Рейтинг</h2></div>
+        <div class="leadertital"><h2>Рейтинг</h2></div>
+        
         <div id="top10-list" class="top-container"></div>
-        <div class="back_to"><button id="backToStartBtn2">Вернуться</button></div>
+       <div class="leaderbtn"> <button id="backToStartBtn2">Вернуться</button></div>
     </div>
-    
 
+    <script type="module">
+        // Импорт необходимых модулей Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+        // Конфигурация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDgVlMxuquB1TmGZECKHDzBW8GZ_vGEO74",
+            authDomain: "engtestsapp.firebaseapp.com",
+            databaseURL: "https://engtestsapp-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "engtestsapp",
+            storageBucket: "engtestsapp.firebasestorage.app",
+            messagingSenderId: "60079949480",
+            appId: "1:60079949480:web:b74e96a4ca97de4a4b649d",
+            measurementId: "G-L1N9GY6EC5"
+        };
+
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        // Получение экземпляра базы данных
+        const database = getDatabase(app);
+        // Создание ссылки на узел 'results'
+        const resultsRef = ref(database, 'results');
+        // Делаем объекты глобальными для использования в script.js
+        window.database = database;
+        window.resultsRef = resultsRef;
+        window.push = push;
+        window.onValue = onValue;
+
+        // Отладочный вывод
+        console.log('Firebase initialized:', { database, resultsRef, push, onValue });
+    </script>
+
+    <!-- Подключение вашего скрипта -->
     <script src="assets/js/englishQuizQuestions.js"></script>
     <script src="assets/js/script.js"></script>
-
-    
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDgVlMxuquB1TmGZECKHDzBW8GZ_vGEO74",
-    authDomain: "engtestsapp.firebaseapp.com",
-    databaseURL: "https://engtestsapp-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "engtestsapp",
-    storageBucket: "engtestsapp.firebasestorage.app",
-    messagingSenderId: "60079949480",
-    appId: "1:60079949480:web:b74e96a4ca97de4a4b649d",
-    measurementId: "G-L1N9GY6EC5"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>
-
-
-
