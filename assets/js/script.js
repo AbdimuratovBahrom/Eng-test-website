@@ -40,6 +40,10 @@ if (typeof window.englishQuizQuestions === 'undefined') {
     window.englishQuizQuestions = {}; // Fallback
 }
 
+// --- Firebase ---
+const database = firebase.database();
+const resultsRef = database.ref('results');
+
 // --- Выбор подуровня ---
 levelSelect.addEventListener('change', function() {
     const level = levelSelect.value;
@@ -162,60 +166,51 @@ function showResults() {
 }
 
 function saveResult(name, level, sublevel, score) {
-    const key = `leaderboard_${level}_${sublevel}`;
-    let leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-    leaderboard.push({
+    const result = {
         name: name,
+        level: level,
+        sublevel: sublevel,
         score: score,
         date: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Yekaterinburg' })
-    });
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 10); // Ограничиваем топ-10 для сохранения
-    localStorage.setItem(key, JSON.stringify(leaderboard));
+    };
+    resultsRef.push(result);
 }
 
 function displayResultsByName() {
     resultsList.innerHTML = '';
     const searchTerm = searchName.value.trim().toLowerCase();
-    const allResults = {};
+    resultsRef.once('value', (snapshot) => {
+        const allResults = snapshot.val() || {};
+        let hasResults = false;
+        for (let key in sublevels) {
+            for (let sublevel of sublevels[key]) {
+                const filteredResults = Object.values(allResults)
+                    .filter(entry =>
+                        entry.level === key &&
+                        entry.sublevel === sublevel.toLowerCase() &&
+                        entry.name.toLowerCase().includes(searchTerm) &&
+                        entry.score > 0
+                    );
+                if (filteredResults.length > 0) {
+                    hasResults = true;
+                    const header = document.createElement('h3');
+                    header.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)} ${sublevel}`;
+                    resultsList.appendChild(header);
 
-    // Собираем все результаты из localStorage, исключая нулевые
-    for (let level in sublevels) {
-        for (let sublevel of sublevels[level]) {
-            const key = `leaderboard_${level}_${sublevel.toLowerCase()}`;
-            const leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-            const nonZeroLeaderboard = leaderboard.filter(entry => entry.score > 0);
-            if (nonZeroLeaderboard.length > 0) {
-                allResults[`${level}_${sublevel.toLowerCase()}`] = nonZeroLeaderboard;
+                    filteredResults.forEach(entry => {
+                        const div = document.createElement('div');
+                        div.textContent = `${entry.name} — ${entry.score} (${entry.date})`;
+                        resultsList.appendChild(div);
+                    });
+                    const spacer = document.createElement('hr');
+                    resultsList.appendChild(spacer);
+                }
             }
         }
-    }
-
-    // Фильтруем и отображаем результаты по имени
-    let hasResults = false;
-    for (let key in allResults) {
-        const filteredResults = allResults[key].filter(entry =>
-            entry.name.toLowerCase().includes(searchTerm)
-        );
-        if (filteredResults.length > 0) {
-            hasResults = true;
-            const header = document.createElement('h3');
-            header.textContent = `${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}`;
-            resultsList.appendChild(header);
-
-            filteredResults.forEach(entry => {
-                const div = document.createElement('div');
-                div.textContent = `${entry.name} — ${entry.score} (${entry.date})`;
-                resultsList.appendChild(div);
-            });
-            const spacer = document.createElement('hr');
-            resultsList.appendChild(spacer);
+        if (!hasResults) {
+            resultsList.innerHTML = '<p>Нет результатов для этого имени</p>';
         }
-    }
-
-    if (!hasResults) {
-        resultsList.innerHTML = '<p>Нет результатов для этого имени</p>';
-    }
+    });
 }
 
 // --- Показ рейтинга всех тестов по подуровням ---
@@ -228,55 +223,53 @@ topLink.addEventListener('click', function(e) {
 
 function showAllLeaderboard() {
     top10List.innerHTML = '';
-    const allLeaderboards = {};
+    resultsRef.once('value', (snapshot) => {
+        const allResults = snapshot.val() || {};
+        const allLeaderboards = {};
 
-    // Собираем все лидерборды по уровням и подуровням, исключая нулевые результаты
-    for (let level in sublevels) {
-        for (let sublevel of sublevels[level]) {
-            const key = `leaderboard_${level}_${sublevel.toLowerCase()}`;
-            const leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-            const nonZeroLeaderboard = leaderboard.filter(entry => entry.score > 0);
-            if (nonZeroLeaderboard.length > 0) {
-                allLeaderboards[`${level}_${sublevel.toLowerCase()}`] = nonZeroLeaderboard;
+        // Группируем результаты по уровням и подуровням
+        Object.values(allResults).forEach(entry => {
+            const key = `${entry.level}_${entry.sublevel}`;
+            if (!allLeaderboards[key]) allLeaderboards[key] = [];
+            allLeaderboards[key].push(entry);
+        });
+
+        // Сортируем и отображаем каждый подуровень со всеми результатами
+        let hasResults = false;
+        for (let key in allLeaderboards) {
+            const leaderboard = allLeaderboards[key].sort((a, b) => b.score - a.score);
+            if (leaderboard.length > 0) {
+                hasResults = true;
+                const [level, sublevel] = key.split('_');
+                const header = document.createElement('h3');
+                header.textContent = `${level.charAt(0).toUpperCase() + level.slice(1)} ${sublevel.toUpperCase()}`;
+                top10List.appendChild(header);
+
+                leaderboard.forEach((entry, idx) => {
+                    const div = document.createElement('div');
+                    let placeText = `${idx + 1}. ${entry.name} — ${entry.score} (${entry.date}) [${key}]`;
+                    if (idx === 0) {
+                        div.className = 'place-1';
+                        placeText += ' 🥇';
+                    } else if (idx === 1) {
+                        div.className = 'place-2';
+                        placeText += ' 🥈';
+                    } else if (idx === 2) {
+                        div.className = 'place-3';
+                        placeText += ' 🥉';
+                    }
+                    div.textContent = placeText;
+                    top10List.appendChild(div);
+                });
+                const spacer = document.createElement('hr');
+                top10List.appendChild(spacer);
             }
         }
-    }
 
-    // Отображаем каждый подуровень со всеми результатами
-    let hasResults = false;
-    for (let key in allLeaderboards) {
-        const leaderboard = allLeaderboards[key];
-        if (leaderboard.length > 0) {
-            hasResults = true;
-            const header = document.createElement('h3');
-            header.textContent = `${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}`;
-            top10List.appendChild(header);
-
-            // Отображаем ВСЕ результаты без ограничения
-            leaderboard.forEach((entry, idx) => {
-                const div = document.createElement('div');
-                let placeText = `${idx + 1}. ${entry.name} — ${entry.score} (${entry.date}) [${key}]`;
-                if (idx === 0) {
-                    div.className = 'place-1';
-                    placeText += ' 🥇';
-                } else if (idx === 1) {
-                    div.className = 'place-2';
-                    placeText += ' 🥈';
-                } else if (idx === 2) {
-                    div.className = 'place-3';
-                    placeText += ' 🥉';
-                }
-                div.textContent = placeText;
-                top10List.appendChild(div);
-            });
-            const spacer = document.createElement('hr');
-            top10List.appendChild(spacer);
+        if (!hasResults) {
+            top10List.innerHTML = '<p>Нет результатов</p>';
         }
-    }
-
-    if (!hasResults) {
-        top10List.innerHTML = '<p>Нет результатов</p>';
-    }
+    });
 }
 
 showLeaderboardBtn.addEventListener('click', function() {
@@ -285,18 +278,7 @@ showLeaderboardBtn.addEventListener('click', function() {
 });
 
 function showLeaderboard(level, sublevel) {
-    const key = `leaderboard_${level}_${sublevel}`;
-    let leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-    top10List.innerHTML = '';
-    if (leaderboard.length === 0) {
-        top10List.innerHTML = '<p>Нет результатов</p>';
-        return;
-    }
-    leaderboard.forEach((entry, idx) => {
-        const div = document.createElement('div');
-        div.textContent = `${idx + 1}. ${entry.name} — ${entry.score} (${entry.date})`;
-        top10List.appendChild(div);
-    });
+    top10List.innerHTML = '<p>Функция временно не реализована для сервера</p>';
 }
 
 backToStartBtn.addEventListener('click', function() {
