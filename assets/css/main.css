@@ -1,12 +1,48 @@
 .hidden {
   display: none;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: #f8f8f8;
+  padding: 10px;
+ 
+}
+.nav ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+}
+.logo img {
+  max-width: 35px;
+  height: auto;
+}
+
+
 
 .section h1 {
   font-family: 'Arial', sans-serif;
   text-align: center;
   color: #ce8061;
   font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.headline {
+ display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.headline p {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  color: #333;
+  font-size: 18px;
   margin-bottom: 20px;
 }
 
@@ -52,10 +88,10 @@ padding: 10px 20px;
 
 
 input[type="text"], select {
-  padding: 15px;
-  margin: 10px 0;
+  padding: 10px;
+  margin: 10px 20px;
   font-size: 16px;
-  width: 200px;
+  width: 100px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -213,4 +249,109 @@ a:hover {
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
+}
+
+/* Стили для контейнера кастомного выпадающего списка */
+.custom-select {
+    position: relative;
+    width: 200px;
+    font-family: Arial, sans-serif;
+}
+
+.custom-select .select-selected {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.custom-select .select-selected:after {
+    /* content: '\25BC'; */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Управление видимостью списка */
+.custom-select .select-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    display: none; /* Изначально скрыт */
+    z-index: 1000; /* Увеличен z-index для избежания перекрытия */
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 4px 4px;
+}
+
+.custom-select .select-items.select-hide {
+    display: none;
+}
+
+
+
+#leaderboardTitle {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.custom-select .select-items:not(.select-hide) {
+    display: block;
+}
+
+/* Стили для контейнера флага и текста */
+.flag-option {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.flag-option img {
+    
+    margin-right: 8px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    object-fit: cover;
+}
+
+.flag-option span {
+    font-size: 14px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.flag-option:hover {
+    background-color: #f0f0f0;
+}
+
+.flag-option.selected {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+
+#backToStartBtn, #backToStartBtn2 {
+    display: block;
+    margin: 10px auto;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#backToStartBtn:hover, #backToStartBtn2:hover {
+    background-color: #0056b3;
 }
