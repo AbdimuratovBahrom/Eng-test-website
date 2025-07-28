@@ -5,9 +5,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  background-color: #f8f8f8;
-  padding: 10px;
+  background-color: #6acde0;
+  padding: 10px 20px;
  
 }
 .nav ul {
@@ -17,8 +16,15 @@
   margin: 0;
 }
 .logo img {
-  max-width: 35px;
+  
+  max-width: 45px;
   height: auto;
+}
+.logo img:hover {
+  transform: scale(1.5);
+  transition: transform 0.3s ease;
+ position: relative;
+ left: 20px;
 }
 
 
@@ -114,21 +120,7 @@ input[type="text"], select {
     padding: 20px;
 }
 
-.option-btn {
-    display: block;
-    margin: 10px 0;
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    width: auto;
-    text-align: left;
-}
 
-.option-btn:disabled {
-    cursor: not-allowed;
-}
 a {
     margin-left: 10px;
     text-decoration: none;
@@ -259,8 +251,10 @@ a:hover {
 }
 
 .custom-select .select-selected {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    /* background-color: #fff;
+    border: 1px solid #ccc; */
+    
+    width: 50px;
     padding: 8px 12px;
     cursor: pointer;
     user-select: none;
@@ -268,9 +262,10 @@ a:hover {
 }
 
 .custom-select .select-selected:after {
-    /* content: '\25BC'; */
+    content: '\25BC';
+   color: #3970d7;
     position: absolute;
-    right: 10px;
+    right: 5px;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -290,6 +285,7 @@ a:hover {
     overflow-y: auto;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 4px 4px;
+    width: 37%;
 }
 
 .custom-select .select-items.select-hide {
@@ -355,3 +351,233 @@ a:hover {
 #backToStartBtn:hover, #backToStartBtn2:hover {
     background-color: #0056b3;
 }
+
+/* Существующие стили остаются без изменений */
+
+/* Стили для бургер-меню */
+.burger-menu {
+    display: none; /* Скрыто по умолчанию на больших экранах */
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.nav-list a:hover {
+    text-decoration: underline;
+}
+
+
+ .option-btn {
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.option-btn.correct {
+    background-color: #90ee90; /* Зеленый для правильного ответа */
+    color: black;
+} 
+
+.option-btn.incorrect {
+    background-color: #ff6347; /* Красный для неправильного ответа */
+    color: white;
+}
+.option-btn {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    text-align: left;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+}
+input[type="text"], select {
+    padding: 10px;
+    margin: 10px 20px;
+    font-size: 16px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+}
+
+
+
+
+
+/* Стили для выпадающих списков */
+#level, #sublevel {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+/* Стили для опций уровней */
+#level option[value="beginner"] {
+    background-color: #00FF00; /* Яркий зелёный для A1, A2 */
+    color: black;
+}
+#level option[value="intermediate"] {
+    background-color: #FFFF00; /* Жёлтый для B1, B2 */
+    color: black;
+}
+#level option[value="advanced"] {
+    background-color: #FF0000; /* Красный для C1, C2 */
+    color: white;
+}
+
+/* Стили для опций подуровней */
+#sublevel option[value="a1"] {
+    background-color: #00FF00; /* Яркий зелёный */
+    color: black;
+}
+#sublevel option[value="a2"] {
+    background-color: #00B7EB; /* Голубой */
+    color: black;
+}
+#sublevel option[value="b1"] {
+    background-color: #FFFF00; /* Жёлтый */
+    color: black;
+}
+#sublevel option[value="b2"] {
+    background-color: #FFA500; /* Оранжевый */
+    color: black;
+}
+#sublevel option[value="c1"] {
+    background-color: #FF0000; /* Красный */
+    color: white;
+}
+#sublevel option[value="c2"] {
+    background-color: #800080; /* Пурпурный */
+    color: white;
+}
+
+/* Убираем стандартный фон для placeholder-опции */
+#level option[value=""], #sublevel option[value=""] {
+    background-color: #fff;
+    color: #888;
+}
+
+/* Стили для выпадающих списков */
+#level, #sublevel {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+}
+
+/* Стили для опций (для выпадающего списка) */
+#level option, #sublevel option {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Убираем стандартный фон для placeholder-опции */
+#level option[value=""], #sublevel option[value=""] {
+    color: #888;
+}
+
+/* Стили для контейнера вариантов ответов */
+#options {
+    text-align: center; /* Центрирование текста внутри контейнера */
+    max-width: 400px; /* Ограничение ширины для лучшего вида (можно настроить) */
+    margin: 0 auto; /* Центрирование контейнера по горизонтали */
+}
+
+/* Стили для кнопок ответов */
+.option-btn {
+    display: block; /* Блоки для центрирования */
+    margin: 5px auto; /* Автоматические отступы по бокам с вертикальным отступом */
+    padding: 10px;
+    width: 80%; /* Устанавливаем фиксированную ширину для кнопок (можно настроить) */
+    text-align: center; /* Центрирование текста внутри кнопки */
+    cursor: pointer;
+    box-sizing: border-box; /* Учитываем padding в ширине */
+}
+
+.option-btn.correct {
+    background-color: #90ee90; /* Зеленый для правильного ответа */
+    color: black;
+}
+
+.option-btn.incorrect {
+    background-color: #ff6347; /* Красный для неправильного ответа */
+    color: white;
+}
+
+
+
+
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .burger-menu {
+        display: block; /* Показываем бургер на маленьких экранах */
+    }
+
+    .nav-list {
+        display: none; /* Скрываем меню по умолчанию на маленьких экранах */
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: #f8f8f8;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .nav-list.active {
+        display: flex; /* Показываем меню при активации */
+    }
+
+    .nav {
+        position: relative;
+    }
+
+    .language-selector {
+        margin-top: 10px; /* Отступ для селектора языка на мобильных */
+    }
+}
+
+
+
+
+
+
+
+
