@@ -432,7 +432,11 @@ function setupCustomSelect() {
     });
 }
 
-// ... (остальной код остается без изменений) ...
+
+
+
+
+
 
 // Переключение бургер-меню
 function setupBurgerMenu() {
@@ -441,12 +445,14 @@ function setupBurgerMenu() {
     if (burgerMenu && navList) {
         burgerMenu.addEventListener('click', () => {
             navList.classList.toggle('active');
-            console.log('Бургер-меню переключено, классы nav-list:', navList.className);
+            const isActive = navList.classList.contains('active');
+            console.log('Бургер-меню переключено, активен:', isActive, 'классы nav-list:', navList.className);
         });
     } else {
         console.error('Бургер-меню или nav-list не найдены');
     }
 }
+
 
 // Обработчик изменения уровня с обновлением цвета
 function setupLevelChange() {

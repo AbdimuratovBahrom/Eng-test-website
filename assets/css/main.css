@@ -1,34 +1,113 @@
+/* Скрытие элементов */
 .hidden {
   display: none;
 }
+
+/* Шапка сайта */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #6acde0;
   padding: 10px 20px;
- 
 }
-.nav ul {
+
+/* Навигация */
+.nav {
+  position: relative;
   display: flex;
-  gap: 20px;
-  list-style: none;
-  margin: 0;
+  align-items: center;
+    justify-content: space-between;
 }
+
+.burger-menu {
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+  display: none;
+}
+
+.nav-list {
+  list-style: none;
+  display: none; /* Скрыто по умолчанию на всех устройствах */
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.nav-list li {
+  margin-left: 20px;
+}
+
+.nav-list a {
+    font-family:  Arial, sans-serif;
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+}
+
+.nav-list a:hover {
+  color: #00B7EB;
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+  .burger-menu {
+    display: block;
+    justify-self: start;
+  }
+
+  .nav-list {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    width: 200px;
+    background-color: #fff;
+    flex-direction: column;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 5px;
+  }
+
+  .nav-list.active {
+    display: flex;
+  }
+
+  .nav-list li {
+    margin: 15px 0;
+    text-align: left;
+  }
+}
+
+/* Десктопная версия */
+@media (min-width: 769px) {
+  .nav-list {
+    display: flex !important;
+  }
+
+  .burger-menu {
+    display: none !important;
+  }
+}
+
+/* Логотип */
 .logo img {
-  
   max-width: 45px;
   height: auto;
 }
+
 .logo img:hover {
   transform: scale(1.5);
   transition: transform 0.3s ease;
- position: relative;
- left: 20px;
+  position: relative;
+  left: 20px;
 }
 
-
-
+/* Заголовок секции */
 .section h1 {
   font-family: 'Arial', sans-serif;
   text-align: center;
@@ -37,13 +116,15 @@
   margin-bottom: 20px;
 }
 
+/* Заголовок и описание */
 .headline {
- display: flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
 }
+
 .headline p {
   font-family: 'Arial', sans-serif;
   text-align: center;
@@ -51,38 +132,62 @@
   font-size: 18px;
   margin-bottom: 20px;
 }
+/* Кнопки */
+.section button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  border: solid 1px rgb(86, 224, 18);
+}
 
-button {
+.section button:hover {
+  color: #333;
+  background-color:rgb(86, 224, 18);
+}
+
+
+
+
+/* Кнопки */
+.nav button {
+  padding: 5px 10px;
+  margin: 5px;
+  font-size: 30px;
+  cursor: pointer;
+  color: white;
+  background-color: none;
+  border: none;
+  border-radius: 50%;
+  border: solid 1px white;
+}
+
+.nav button:hover {
+  color: #333;
+  background-color: white;
+}
+
+.result_btn button {
   padding: 10px 20px;
   margin: 5px;
   font-size: 16px;
   cursor: pointer;
   background-color: white;
-  color:rgb(86, 224, 18) ;
+  color: rgb(86, 224, 18);
   border: none;
   border-radius: 5px;
   border: solid 1px rgb(86, 224, 18);
 }
 
-button:hover {
-  background-color: #f8f8f8;
-}
-.result_btn button {
-padding: 10px 20px;
-  margin: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: white;
-  color:rgb(86, 224, 18) ;
-  border: none;
-  border-radius: 5px;
-  border: solid 1px rgb(86, 224, 18);
-}
 .result_btn button:hover {
   background-color: #f8f8f8;
 }
 
-.back_from_result button  {
+.back_from_result button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,129 +197,7 @@ padding: 10px 20px;
   color: white;
 }
 
-
-input[type="text"], select {
-  padding: 10px;
-  margin: 10px 20px;
-  font-size: 16px;
-  width: 100px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.leaderboard-section {
-  margin-top: 20px;
- 
-}
-
-.scrollable {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 10px;
-}
-
-/* Существующие стили остаются без изменений */
-.section {
-    text-align: center;
-    padding: 20px;
-}
-
-
-a {
-    margin-left: 10px;
-    text-decoration: none;
-    color: #007BFF;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-
-/* Стиль для поля Top */
-.top-container {
-    width: 30%;
-    margin: 20px auto;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow-y: auto;
-    max-height: 90vh; /* Увеличено для тестирования */
-}
-
-.top-container h3 {
-    margin: 10px 0;
-    font-size: 18px;
-    color: #333;
-}
-
-.top-container div {
-    margin: 5px 0;
-    font-size: 14px;
-}
-
-/* Подсветка первых трех мест */
-.top-container .place-1 {
-    color: #FFD700; /* Золото для 1-го места */
-    padding: 2px 5px;
-    border-radius: 3px;
-   
-}
-
-.top-container .place-2 {
-    color: #C0C0C0; /* Серебро для 2-го места */
-    padding: 2px 5px;
-    border-radius: 3px;
-}
-
-.top-container .place-3 {
-    color: #CD7F32; /* Бронза для 3-го места */
-    padding: 2px 5px;
-    border-radius: 3px;
-}
-
-.top-container hr {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 10px 0;
-
-    
-}
-#resultsList {
-    margin: 0px auto;
-    max-width: 800px;
-    max-height: 500px;
-    overflow-y: auto;
-    text-align: left;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-#resultsList div {
-    margin: 5px 0;
-    padding: 5px;
-}
-
-#searchName {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.results h2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.back_to button 
-
-{
+.back_to button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -222,15 +205,6 @@ a:hover {
   display: block;
   background-color: #007BFF;
   color: white;
-}
-
-/* ... (предыдущие стили остаются без изменений) */
-
-.leadertital h2 {
-  text-align: center;
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
 }
 
 .leaderbtn button {
@@ -243,341 +217,304 @@ a:hover {
   border-radius: 5px;
 }
 
-/* Стили для контейнера кастомного выпадающего списка */
-.custom-select {
-    position: relative;
-    width: 200px;
-    font-family: Arial, sans-serif;
-}
-
-.custom-select .select-selected {
-    /* background-color: #fff;
-    border: 1px solid #ccc; */
-    
-    width: 50px;
-    padding: 8px 12px;
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-}
-
-.custom-select .select-selected:after {
-    content: '\25BC';
-   color: #3970d7;
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-/* Управление видимостью списка */
-.custom-select .select-items {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-top: none;
-    display: none; /* Изначально скрыт */
-    z-index: 1000; /* Увеличен z-index для избежания перекрытия */
-    max-height: 200px;
-    overflow-y: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 4px 4px;
-    width: 37%;
-}
-
-.custom-select .select-items.select-hide {
-    display: none;
-}
-
-
-
-#leaderboardTitle {
-    text-align: center;
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.custom-select .select-items:not(.select-hide) {
-    display: block;
-}
-
-/* Стили для контейнера флага и текста */
-.flag-option {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.flag-option img {
-    
-    margin-right: 8px;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    object-fit: cover;
-}
-
-.flag-option span {
-    font-size: 14px;
-    color: #333;
-    font-family: Arial, sans-serif;
-}
-
-.flag-option:hover {
-    background-color: #f0f0f0;
-}
-
-.flag-option.selected {
-    background-color: #e0e0e0;
-    font-weight: bold;
-}
-
 #backToStartBtn, #backToStartBtn2 {
-    display: block;
-    margin: 10px auto;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+  display: block;
+  margin: 10px auto;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 #backToStartBtn:hover, #backToStartBtn2:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
-/* Существующие стили остаются без изменений */
-
-/* Стили для бургер-меню */
-.burger-menu {
-    display: none; /* Скрыто по умолчанию на больших экранах */
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 5px;
+/* Поля ввода и выпадающие списки */
+input[type="text"], select {
+  padding: 10px;
+  margin: 10px 20px;
+  font-size: 16px;
+  width: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.nav {
-    display: flex;
-    align-items: center;
+/* Секции */
+.section {
+  text-align: center;
+  padding: 20px;
 }
 
-.nav-list {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.leaderboard-section {
+  margin-top: 20px;
 }
 
-.nav-list a {
-    text-decoration: none;
-    color: #333;
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    transition: color 0.3s ease;
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
 }
 
-.nav-list a:hover {
-    text-decoration: underline;
+/* Контейнер топа */
+.top-container {
+  width: 30%;
+  margin: 20px auto;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
-
- .option-btn {
-    display: block;
-    margin: 5px 0;
-    padding: 10px;
-    cursor: pointer;
+.top-container h3 {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #333;
 }
 
-.option-btn.correct {
-    background-color: #90ee90; /* Зеленый для правильного ответа */
-    color: black;
-} 
-
-.option-btn.incorrect {
-    background-color: #ff6347; /* Красный для неправильного ответа */
-    color: white;
+.top-container div {
+  margin: 5px 0;
+  font-size: 14px;
 }
+
+.top-container .place-1 {
+  color: #FFD700;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.top-container .place-2 {
+  color: #C0C0C0;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.top-container .place-3 {
+  color: #CD7F32;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.top-container hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+/* Результаты */
+#resultsList {
+  margin: 0px auto;
+  max-width: 800px;
+  max-height: 500px;
+  overflow-y: auto;
+  text-align: left;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#resultsList div {
+  margin: 5px 0;
+  padding: 5px;
+}
+
+#searchName {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.results h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leadertital h2 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Кастомный выпадающий список */
+.custom-select {
+  position: relative;
+  width: 200px;
+  font-family: Arial, sans-serif;
+}
+
+.custom-select .select-selected {
+  width: 50px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.custom-select .select-selected:after {
+  content: '\25BC';
+  color: #3970d7;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.custom-select .select-items {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  display: none;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 4px 4px;
+  width: 37%;
+}
+
+.custom-select .select-items.select-hide {
+  display: none;
+}
+
+.custom-select .select-items:not(.select-hide) {
+  display: block;
+}
+
+.flag-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.flag-option img {
+  margin-right: 8px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.flag-option span {
+  font-size: 14px;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.flag-option:hover {
+  background-color: #f0f0f0;
+}
+
+.flag-option.selected {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+/* Опции кнопок */
 .option-btn {
-    display: block;
-    margin: 10px 0;
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    width: auto;
-    text-align: left;
+  display: block;
+  margin: 10px 0;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  text-align: left;
 }
 
 .option-btn:disabled {
-    cursor: not-allowed;
-}
-input[type="text"], select {
-    padding: 10px;
-    margin: 10px 20px;
-    font-size: 16px;
-    width: 100px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    
+  cursor: not-allowed;
 }
 
-
-
-
-
-/* Стили для выпадающих списков */
+/* Выпадающие списки */
 #level, #sublevel {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  transition: background-color 0.3s ease;
 }
 
-/* Стили для опций уровней */
-#level option[value="beginner"] {
-    background-color: #00FF00; /* Яркий зелёный для A1, A2 */
-    color: black;
-}
-#level option[value="intermediate"] {
-    background-color: #FFFF00; /* Жёлтый для B1, B2 */
-    color: black;
-}
-#level option[value="advanced"] {
-    background-color: #FF0000; /* Красный для C1, C2 */
-    color: white;
-}
-
-/* Стили для опций подуровней */
-#sublevel option[value="a1"] {
-    background-color: #00FF00; /* Яркий зелёный */
-    color: black;
-}
-#sublevel option[value="a2"] {
-    background-color: #00B7EB; /* Голубой */
-    color: black;
-}
-#sublevel option[value="b1"] {
-    background-color: #FFFF00; /* Жёлтый */
-    color: black;
-}
-#sublevel option[value="b2"] {
-    background-color: #FFA500; /* Оранжевый */
-    color: black;
-}
-#sublevel option[value="c1"] {
-    background-color: #FF0000; /* Красный */
-    color: white;
-}
-#sublevel option[value="c2"] {
-    background-color: #800080; /* Пурпурный */
-    color: white;
-}
-
-/* Убираем стандартный фон для placeholder-опции */
-#level option[value=""], #sublevel option[value=""] {
-    background-color: #fff;
-    color: #888;
-}
-
-/* Стили для выпадающих списков */
-#level, #sublevel {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 200px;
-    transition: background-color 0.3s ease; /* Плавное изменение цвета */
-}
-
-/* Стили для опций (для выпадающего списка) */
 #level option, #sublevel option {
-    background-color: #fff;
-    color: #000;
+  background-color: #fff;
+  color: #000;
 }
 
-/* Убираем стандартный фон для placeholder-опции */
 #level option[value=""], #sublevel option[value=""] {
-    color: #888;
+  color: #888;
 }
 
-/* Стили для контейнера вариантов ответов */
+/* Контейнер вариантов ответов */
 #options {
-    text-align: center; /* Центрирование текста внутри контейнера */
-    max-width: 400px; /* Ограничение ширины для лучшего вида (можно настроить) */
-    margin: 0 auto; /* Центрирование контейнера по горизонтали */
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-/* Стили для кнопок ответов */
 .option-btn {
-    display: block; /* Блоки для центрирования */
-    margin: 5px auto; /* Автоматические отступы по бокам с вертикальным отступом */
-    padding: 10px;
-    width: 80%; /* Устанавливаем фиксированную ширину для кнопок (можно настроить) */
-    text-align: center; /* Центрирование текста внутри кнопки */
-    cursor: pointer;
-    box-sizing: border-box; /* Учитываем padding в ширине */
+  display: block;
+  margin: 5px auto;
+  padding: 10px;
+  width: 80%;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .option-btn.correct {
-    background-color: #90ee90; /* Зеленый для правильного ответа */
-    color: black;
+  background-color: #90ee90;
+  color: black;
 }
 
 .option-btn.incorrect {
-    background-color: #ff6347; /* Красный для неправильного ответа */
-    color: white;
+  background-color: #ff6347;
+  color: white;
+}
+
+.result_link {
+  display: inline-block;
+  margin: 10px 0;
+  color: #007BFF;
+  text-decoration: none;
+}
+.top_link {
+  display: inline-block;
+  margin: 10px 0;
+  color: #007BFF;
+  text-decoration: none;
 }
 
 
 
 
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .burger-menu {
-        display: block; /* Показываем бургер на маленьких экранах */
-    }
-
-    .nav-list {
-        display: none; /* Скрываем меню по умолчанию на маленьких экранах */
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background-color: #f8f8f8;
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-    }
-
-    .nav-list.active {
-        display: flex; /* Показываем меню при активации */
-    }
-
-    .nav {
-        position: relative;
-    }
-
-    .language-selector {
-        margin-top: 10px; /* Отступ для селектора языка на мобильных */
-    }
+.section a {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+   color: #007BFF;
+  background-color: white;
+  border: none;
+ 
 }
 
+.section a:hover {
 
-
-
-
-
-
-
+  color:rgb(86, 224, 18);
+}
