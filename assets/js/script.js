@@ -13,7 +13,7 @@ const translations = {
         sublevelPlaceholder: "Select sublevel",
         startQuizBtn: "Start Test",
         resultsLink: "Results",
-        topLink: "Top",
+        topLink: "Top10",
         scoreText: "Your result: ",
         searchNamePlaceholder: "Search by name",
         showLeaderboardBtn: "Show Ranking",
@@ -39,7 +39,7 @@ const translations = {
         sublevelPlaceholder: "Выберите подуровень",
         startQuizBtn: "Начать тест",
         resultsLink: "Результаты",
-        topLink: "Top",
+        topLink: "Top10",
         scoreText: "Ваш результат: ",
         searchNamePlaceholder: "Поиск по имени",
         showLeaderboardBtn: "Показать рейтинг",
@@ -140,10 +140,9 @@ function waitForFirebase() {
                 resultsRef = window.resultsRef;
                 push = window.push;
                 onValue = window.onValue;
-                console.log('Firebase доступен:', { database, resultsRef });
+                console.log('Firebase доступен');
                 resolve();
             } else {
-                console.log('Ожидание Firebase...');
                 setTimeout(checkFirebase, 100);
             }
         };
@@ -172,17 +171,12 @@ function showQuestion(index) {
             button.textContent = option;
             button.className = 'option-btn';
             optionsDiv.appendChild(button);
-            console.log('Созданна кнопка:', { option, index });
         });
-        console.log('Показан вопрос:', question, 'Правильный ответ:', question.correctAnswer);
-    } else {
-        console.error('Ошибка отображения вопроса:', { index, currentQuestions, optionsDiv });
     }
 }
 
 // Функция проверки ответа с подсветкой
 function checkAnswer(selected, correctAnswer) {
-    console.log('Проверяем ответ:', { selected, correctAnswer, currentQuestion, score });
     const buttons = optionsDiv.getElementsByClassName('option-btn');
     for (let button of buttons) {
         if (button.textContent === correctAnswer) {
@@ -193,21 +187,21 @@ function checkAnswer(selected, correctAnswer) {
     }
     if (selected === correctAnswer) {
         score++;
-        console.log('Правильный ответ, новый score:', score);
-    } else {
-        console.log('Неправильный ответ, текущий score:', score);
     }
     setTimeout(() => {
         currentQuestion++;
         if (currentQuestion < currentQuestions.length) {
             showQuestion(currentQuestion);
+            for (let button of buttons) {
+                button.classList.remove('correct', 'incorrect');
+            }
         } else {
             showResults();
+            for (let button of buttons) {
+                button.classList.remove('correct', 'incorrect');
+            }
         }
-        for (let button of buttons) {
-            button.classList.remove('correct', 'incorrect');
-        }
-    }, 1000); // Задержка 1 секунда для отображения подсветки
+    }, 1000);
 }
 
 // Функция отображения результатов
@@ -217,20 +211,13 @@ function showResults() {
         sectionThree.classList.remove('hidden');
         scoreDisplay.textContent = `${translations[currentLanguage].scoreText}${score}/${currentQuestions.length}`;
         saveResult();
-        console.log('Тест завершен, итоговый score:', score);
     }
 }
 
 // Функция сохранения результата
 function saveResult() {
-    if (!userName || !userLevel || !userSublevel || !database || !resultsRef) {
-        console.error('Ошибка сохранения: отсутствуют данные или подключение', { userName, userLevel, userSublevel, database, resultsRef });
-        return;
-    }
-    if (currentQuestions.length === 0) {
-        console.error('Ошибка: currentQuestions пустой');
-        return;
-    }
+    if (!userName || !userLevel || !userSublevel || !database || !resultsRef) return;
+    if (currentQuestions.length === 0) return;
     const result = {
         name: userName,
         level: userLevel,
@@ -239,9 +226,7 @@ function saveResult() {
         total: currentQuestions.length,
         timestamp: new Date().toISOString()
     };
-    push(resultsRef, result)
-        .then(() => console.log('Результат сохранен:', result))
-        .catch(error => console.error('Ошибка при сохранении в Firebase:', error));
+    push(resultsRef, result).catch(error => console.error('Ошибка сохранения:', error));
 }
 
 // Функция отображения результатов по имени
@@ -272,17 +257,15 @@ function showAllLeaderboard() {
             if (data) {
                 const results = Object.values(data)
                     .filter(result => result.total && result.timestamp && !isNaN(result.score) && !isNaN(result.total))
-                    .sort((a, b) => b.score / b.total - a.score / a.total || b.timestamp.localeCompare(a.timestamp))
+                    .sort((a, b) => b.score / b.total - a.score / a.total)
                     .slice(0, 10);
                 if (results.length > 0) {
                     results.forEach((result, index) => {
-                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total} (${new Date(result.timestamp).toLocaleString()})</div>`;
+                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total}</div>`;
                     });
                 } else {
                     top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
                 }
-            } else {
-                top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
             }
         });
     }
@@ -296,17 +279,15 @@ function showLeaderboard(level, sublevel) {
             const data = snapshot.val();
             if (data) {
                 const filtered = Object.values(data)
-                    .filter(r => r.level === level && r.sublevel === sublevel && r.total && r.timestamp && !isNaN(r.score) && !isNaN(r.total));
-                const results = filtered.sort((a, b) => b.score / b.total - a.score / a.total || b.timestamp.localeCompare(a.timestamp)).slice(0, 10);
+                    .filter(r => r.level === level && r.sublevel === sublevel && r.total && !isNaN(r.score) && !isNaN(r.total));
+                const results = filtered.sort((a, b) => b.score / b.total - a.score / a.total).slice(0, 10);
                 if (results.length > 0) {
                     results.forEach((result, index) => {
-                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total} (${new Date(result.timestamp).toLocaleString()})</div>`;
+                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total}</div>`;
                     });
                 } else {
                     top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
                 }
-            } else {
-                top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
             }
         });
     }
@@ -330,7 +311,6 @@ function updateLanguage(lang) {
     if (searchName) searchName.placeholder = t.searchNamePlaceholder;
     if (headlineP) headlineP.textContent = t.headlineP;
 
-    // Обновление пунктов меню
     if (navLinks) {
         navLinks[0].textContent = t.navHome;
         navLinks[1].textContent = t.navTest;
@@ -339,7 +319,7 @@ function updateLanguage(lang) {
         navLinks[4].textContent = t.navTelegram;
     }
 
-    if (scoreDisplay) scoreDisplay.textContent = scoreDisplay.textContent.replace(/Ваш результат: |Your result: |Sizning natijangiz: |Siziñ natïjañiz: /, t.scoreText);
+    if (scoreDisplay) scoreDisplay.textContent = scoreDisplay.textContent.replace(/Ваш результат: |Your result: |Sizning natijangiz: /, t.scoreText);
     if (questionNumber) questionNumber.textContent = questionNumber.textContent.replace(/Вопрос |Question |Savol /, t.questionPrefix || '');
     if (resultsList && resultsList.textContent.includes('Нет результатов')) resultsList.innerHTML = `<p>${t.noResults}</p>`;
     if (top10List && top10List.textContent.includes('Нет результатов')) top10List.innerHTML = `<p>${t.noLevelResults}</p>`;
@@ -351,119 +331,14 @@ function updateLanguage(lang) {
     }
 }
 
-// ... (остальной код остается без изменений до setupCustomSelect) ...
-
-// Кастомный выпадающий список
-function setupCustomSelect() {
-    const select = document.getElementById('languageSelect');
-    if (!select) {
-        console.error('Элемент languageSelect не найден');
-        return;
-    }
-    const selected = select.querySelector('.select-selected');
-    const items = select.querySelector('.select-items');
-    const options = items.querySelectorAll('.flag-option');
-
-    if (!selected || !items || !options.length) {
-        console.error('Ошибка инициализации кастомного выпадающего списка:', { selected, items, options });
-        return;
-    }
-
-    selected.addEventListener('click', function(e) {
-        e.stopPropagation();
-        items.classList.toggle('select-hide');
-        this.classList.toggle('select-arrow-active');
-        console.log('Клик по select-selected, классы items:', items.className);
-
-        // Скрываем текущий выбранный язык и показываем только другие
-        const currentLang = currentLanguage;
-        options.forEach(option => {
-            const lang = option.getAttribute('data-value');
-            if (lang === currentLang) {
-                option.style.display = 'none'; // Скрываем текущий язык
-            } else {
-                option.style.display = 'block'; // Показываем остальные языки
-            }
-        });
-    });
-
-    options.forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const value = this.getAttribute('data-value');
-            updateLanguage(value);
-
-            options.forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
-
-            items.classList.add('select-hide');
-            selected.classList.remove('select-arrow-active');
-            selected.innerHTML = this.innerHTML;
-
-            // После выбора нового языка обновляем список, скрывая только что выбранный
-            setTimeout(() => {
-                const newCurrentLang = value;
-                options.forEach(opt => {
-                    const lang = opt.getAttribute('data-value');
-                    if (lang === newCurrentLang) {
-                        opt.style.display = 'none';
-                    } else {
-                        opt.style.display = 'block';
-                    }
-                });
-            }, 0);
-        });
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!select.contains(e.target)) {
-            items.classList.add('select-hide');
-            selected.classList.remove('select-arrow-active');
-        }
-    });
-
-    // Инициализация: скрываем текущий язык при загрузке
-    const initialLang = currentLanguage;
-    options.forEach(option => {
-        const lang = option.getAttribute('data-value');
-        if (lang === initialLang) {
-            option.style.display = 'none';
-        }
-    });
-}
-
-
-
-
-
-
-
-// Переключение бургер-меню
-function setupBurgerMenu() {
-    const burgerMenu = document.querySelector('.burger-menu');
-    const navList = document.querySelector('.nav-list');
-    if (burgerMenu && navList) {
-        burgerMenu.addEventListener('click', () => {
-            navList.classList.toggle('active');
-            const isActive = navList.classList.contains('active');
-            console.log('Бургер-меню переключено, активен:', isActive, 'классы nav-list:', navList.className);
-        });
-    } else {
-        console.error('Бургер-меню или nav-list не найдены');
-    }
-}
-
-
 // Обработчик изменения уровня с обновлением цвета
 function setupLevelChange() {
     if (levelSelect) {
         levelSelect.addEventListener('change', function() {
             const level = this.value;
-            console.log('Выбран уровень:', level);
             if (sublevelSelect) {
                 sublevelSelect.innerHTML = `<option value="">${translations[currentLanguage].sublevelPlaceholder}</option>`;
                 sublevelSelect.disabled = true;
-
                 if (sublevels[level]) {
                     sublevels[level].forEach(sub => {
                         const opt = document.createElement('option');
@@ -472,12 +347,8 @@ function setupLevelChange() {
                         sublevelSelect.appendChild(opt);
                     });
                     sublevelSelect.disabled = false;
-                    console.log('Добавлены подуровни:', sublevels[level]);
-                } else {
-                    console.log('Уровень не найден в sublevels:', level);
                 }
             }
-            // Обновление цвета поля уровня
             updateLevelColor();
         });
     }
@@ -498,7 +369,6 @@ function updateLevelColor() {
         const level = levelSelect.value;
         levelSelect.style.backgroundColor = getLevelColor(level);
         levelSelect.style.color = getTextColor(level);
-        console.log('Обновлён цвет уровня:', { level, color: levelSelect.style.backgroundColor });
     }
 }
 
@@ -508,7 +378,6 @@ function updateSublevelColor() {
         const sublevel = sublevelSelect.value;
         sublevelSelect.style.backgroundColor = getSublevelColor(sublevel);
         sublevelSelect.style.color = getTextColorFromSublevel(sublevel);
-        console.log('Обновлён цвет подуровня:', { sublevel, color: sublevelSelect.style.backgroundColor });
     }
 }
 
@@ -518,14 +387,14 @@ function getLevelColor(level) {
         'beginner': '#00FF00',
         'intermediate': '#FFFF00',
         'advanced': '#FF0000',
-        '': '#fff' // Плейсхолдер
+        '': '#fff'
     };
     return colors[level] || '#fff';
 }
 
-// Функция получения цвета текста для уровня (чёрный для светлых, белый для тёмных)
+// Функция получения цвета текста для уровня
 function getTextColor(level) {
-    const darkColors = ['#FF0000']; // Тёмные цвета, требующие белого текста
+    const darkColors = ['#FF0000'];
     return darkColors.includes(getLevelColor(level)) ? '#fff' : '#000';
 }
 
@@ -538,18 +407,16 @@ function getSublevelColor(sublevel) {
         'b2': '#FFA500',
         'c1': '#FF0000',
         'c2': '#800080',
-        '': '#fff' // Плейсхолдер
+        '': '#fff'
     };
     return colors[sublevel] || '#fff';
 }
 
 // Функция получения цвета текста для подуровня
 function getTextColorFromSublevel(sublevel) {
-    const darkColors = ['#FF0000', '#800080']; // Тёмные цвета, требующие белого текста
+    const darkColors = ['#FF0000', '#800080'];
     return darkColors.includes(getSublevelColor(sublevel)) ? '#fff' : '#000';
 }
-
-// ... (остальной код остается без изменений до setupNavLinks) ...
 
 // Функция для обработки навигационных ссылок
 function setupNavLinks() {
@@ -558,33 +425,11 @@ function setupNavLinks() {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const action = {
-                    0: () => window.open(window.location.href, '_blank'), // Главная
-                    1: () => {
-                        if (sectionOne && sectionTwo) {
-                            sectionTwo.classList.add('hidden');
-                            sectionOne.classList.remove('hidden');
-                            window.open(window.location.href, '_blank');
-                        }
-                    }, // Тест
-                    2: () => {
-                        if (sectionOne && sectionTwo && sectionThree && scoreDisplay) {
-                            sectionOne.classList.add('hidden');
-                            sectionTwo.classList.add('hidden');
-                            sectionThree.classList.remove('hidden');
-                            scoreDisplay.textContent = translations[currentLanguage].scoreText + scoreDisplay.textContent.replace(/Ваш результат: /, '');
-                            displayResultsByName();
-                            window.open(window.location.href + '#results', '_blank');
-                        }
-                    }, // Результаты
-                    3: () => {
-                        if (sectionOne && leaderboardDiv) {
-                            sectionOne.classList.add('hidden');
-                            leaderboardDiv.classList.remove('hidden');
-                            showAllLeaderboard();
-                            window.open(window.location.href + '#leaderboard', '_blank');
-                        }
-                    }, // Рейтинг
-                    4: () => window.open(link.href, '_blank') // Наш Телеграм бот
+                    0: () => window.open(window.location.href, '_blank'),
+                    1: () => { if (sectionOne && sectionTwo) { sectionTwo.classList.add('hidden'); sectionOne.classList.remove('hidden'); } },
+                    2: () => { if (sectionOne && sectionTwo && sectionThree && scoreDisplay) { sectionOne.classList.add('hidden'); sectionTwo.classList.add('hidden'); sectionThree.classList.remove('hidden'); scoreDisplay.textContent = translations[currentLanguage].scoreText + score; displayResultsByName(); } },
+                    3: () => { if (sectionOne && leaderboardDiv) { sectionOne.classList.add('hidden'); leaderboardDiv.classList.remove('hidden'); showAllLeaderboard(); } },
+                    4: () => window.open(link.href, '_blank')
                 }[index];
                 if (action) action();
             });
@@ -592,8 +437,95 @@ function setupNavLinks() {
     }
 }
 
-// ... (остальной код остается без изменений) ...
-// Инициализация после загрузки страницы
+// Переключение бургер-меню
+function setupBurgerMenu() {
+    const burgerMenu = document.querySelector('.burger-menu');
+    const navList = document.querySelector('.nav-list');
+    if (burgerMenu && navList) {
+        burgerMenu.addEventListener('click', () => {
+            const isActive = navList.classList.toggle('active');
+            if (isActive) {
+                burgerMenu.textContent = '×';
+                burgerMenu.classList.add('active');
+            } else {
+                burgerMenu.textContent = '☰';
+                burgerMenu.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (navList.classList.contains('active')) {
+                const isClickInsideMenu = navList.contains(e.target) || burgerMenu.contains(e.target);
+                if (!isClickInsideMenu) {
+                    navList.classList.remove('active');
+                    burgerMenu.textContent = '☰';
+                    burgerMenu.classList.remove('active');
+                }
+            }
+        });
+    }
+}
+
+// Кастомный выпадающий список (только три других флага)
+function setupCustomSelect() {
+    const select = document.getElementById('languageSelect');
+    if (!select) {
+        console.error('Элемент languageSelect не найден');
+        return;
+    }
+    const selected = select.querySelector('.select-selected');
+    const items = select.querySelector('.select-items');
+    const options = items.querySelectorAll('.flag-option');
+
+    if (!selected || !items || !options.length) {
+        console.error('Ошибка инициализации кастомного выпадающего списка');
+        return;
+    }
+
+    // Функция для обновления отображаемых флагов
+    function updateVisibleFlags() {
+        options.forEach(option => {
+            const value = option.getAttribute('data-value');
+            if (value === currentLanguage) {
+                option.style.display = 'none'; // Скрываем текущий язык
+            } else {
+                option.style.display = 'flex'; // Показываем остальные
+            }
+        });
+    }
+
+    selected.addEventListener('click', function(e) {
+        e.stopPropagation();
+        items.classList.toggle('select-hide');
+        this.classList.toggle('select-arrow-active');
+        updateVisibleFlags(); // Обновляем флаги при открытии
+        console.log('Клик по select-selected, текущий язык:', currentLanguage, 'классы items:', items.className);
+    });
+
+    options.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const value = this.getAttribute('data-value');
+            updateLanguage(value);
+            items.classList.add('select-hide');
+            selected.classList.remove('select-arrow-active');
+            selected.innerHTML = this.innerHTML;
+            updateVisibleFlags(); // Обновляем флаги после выбора
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!select.contains(e.target)) {
+            items.classList.add('select-hide');
+            selected.classList.remove('select-arrow-active');
+        }
+    });
+
+    // Инициализация: скрываем текущий язык при загрузке
+    updateVisibleFlags();
+}
+
+// Инициализация
 document.addEventListener('DOMContentLoaded', async () => {
     // Инициализация DOM элементов
     levelSelect = document.getElementById('level');
@@ -622,17 +554,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     burgerMenu = document.querySelector('.burger-menu');
     navLinks = document.querySelectorAll('.nav-list a');
 
-    console.log('DOM elements initialized:', {
-        levelSelect, sublevelSelect, startQuizBtn, resultsLink, topLink, sectionOne, sectionTwo,
-        sectionThree, leaderboardDiv, showLeaderboardBtn, backToStartBtn, backToStartBtn2, top10List,
-        questionNumber, questionText, optionsDiv, scoreDisplay, searchName, resultsList, title,
-        headlineP, leaderboardTitle, languageSelect, burgerMenu, navLinks
-    });
+    console.log('DOM elements initialized:', { startQuizBtn, languageSelect });
 
     await waitForFirebase();
     if (!window.englishQuizQuestions || Object.keys(window.englishQuizQuestions).length === 0) {
-        console.error('Вопросы не загружены. Проверьте импорт englishQuizQuestions.js');
-        window.englishQuizQuestions = {};
+        console.warn('Вопросы не загружены, используются временные данные');
+        window.englishQuizQuestions = {
+            beginner: { a1: [{ question: "What is 1+1?", options: ["2", "3", "4"], correctAnswer: "2" }] }
+        };
     }
 
     setupLevelChange();
@@ -640,47 +569,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLanguage(currentLanguage);
     setupCustomSelect();
     setupBurgerMenu();
-    setupNavLinks(); // Добавляем обработчики для навигационных ссылок
+    setupNavLinks();
 
-    // Временный глобальный слушатель для диагностики
     document.addEventListener('click', (e) => {
         console.log('Глобальный клик:', { target: e.target.tagName, class: e.target.className, id: e.target.id });
     });
 
-    // Делегирование событий для обработки кликов на ответы
     if (optionsDiv) {
         optionsDiv.addEventListener('click', (e) => {
             if (e.target.className === 'option-btn' && currentQuestions.length > 0 && currentQuestion < currentQuestions.length) {
                 const selected = e.target.textContent;
-                console.log('Клик по кнопке ответа:', { selected, currentQuestion, question: currentQuestions[currentQuestion] });
                 checkAnswer(selected, currentQuestions[currentQuestion].correctAnswer);
-            } else {
-                console.log('Клик не обработан:', { target: e.target.className, currentQuestions, currentQuestion });
             }
         });
-    } else {
-        console.error('optionsDiv не найден');
     }
 
-    // Привязка событий
     if (startQuizBtn) {
         startQuizBtn.addEventListener('click', function() {
-            console.log('Клик по "Начать тест"');
             userName = document.getElementById('userName').value.trim();
             if (!userName) {
-                alert(translations[currentLanguage].enterNameAlert || 'Введите имя!');
+                alert(translations[currentLanguage].enterNameAlert);
                 return;
             }
             if (!levelSelect.value || !sublevelSelect.value) {
-                alert(translations[currentLanguage].selectLevelAlert || 'Выберите уровень и подуровень!');
+                alert(translations[currentLanguage].selectLevelAlert);
                 return;
             }
             userLevel = levelSelect.value;
             userSublevel = sublevelSelect.value.toLowerCase();
-            console.log('Выбранный уровень:', userLevel, 'Подуровень:', userSublevel);
             const questions = window.englishQuizQuestions[userLevel]?.[userSublevel] || [];
             if (questions.length === 0) {
-                alert(translations[currentLanguage].noQuestionsAlert || 'Вопросы для выбранного уровня и подуровня не найдены!');
+                alert(translations[currentLanguage].noQuestionsAlert);
                 return;
             }
             currentQuestions = shuffle(questions).slice(0, 20);
@@ -690,7 +609,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 sectionOne.classList.add('hidden');
                 sectionTwo.classList.remove('hidden');
                 showQuestion(currentQuestion);
-                console.log('Переход к вопросу:', currentQuestion, 'Количество вопросов:', currentQuestions.length);
             }
         });
     }
@@ -701,7 +619,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             sectionOne.classList.add('hidden');
             sectionTwo.classList.add('hidden');
             sectionThree.classList.remove('hidden');
-            scoreDisplay.textContent = translations[currentLanguage].scoreText + scoreDisplay.textContent.replace(/Ваш результат: /, '');
+            scoreDisplay.textContent = translations[currentLanguage].scoreText + score;
             displayResultsByName();
         }
     });
@@ -709,12 +627,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (searchName) searchName.addEventListener('input', displayResultsByName);
     if (topLink) topLink.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('Клик по "Top"');
         if (sectionOne && leaderboardDiv) {
             sectionOne.classList.add('hidden');
             leaderboardDiv.classList.remove('hidden');
             showAllLeaderboard();
-            console.log('Рейтинг отображен');
         }
     });
     if (showLeaderboardBtn) showLeaderboardBtn.addEventListener('click', function() {
@@ -735,7 +651,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 levelSelect.value = '';
                 sublevelSelect.innerHTML = `<option value="">${translations[currentLanguage].sublevelPlaceholder}</option>`;
                 sublevelSelect.disabled = true;
-                // Сброс цветов при возврате
                 levelSelect.style.backgroundColor = '#fff';
                 levelSelect.style.color = '#000';
                 sublevelSelect.style.backgroundColor = '#fff';
@@ -754,7 +669,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 levelSelect.value = '';
                 sublevelSelect.innerHTML = `<option value="">${translations[currentLanguage].sublevelPlaceholder}</option>`;
                 sublevelSelect.disabled = true;
-                // Сброс цветов при возврате
                 levelSelect.style.backgroundColor = '#fff';
                 levelSelect.style.color = '#000';
                 sublevelSelect.style.backgroundColor = '#fff';

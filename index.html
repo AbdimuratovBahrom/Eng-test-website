@@ -6,43 +6,40 @@
     <title>Тест по английскому языку</title>
     <link rel="icon" href="./images/en.png" type="image/x-icon">
     <link rel="stylesheet" href="./assets/css/main.css">
-
 </head>
-<body> 
+<body>
     <div class="header">
-    <div class="logo">
-        <img src="./images/logo.jpg" alt="Логотип">
-    </div>
-    <div class="nav">
-        <button class="burger-menu">☰</button> <!-- Иконка бургера -->
-        <ul class="nav-list">
-        <li><a href="#home" target ="_blank">Главная</a></li>
-        <li><a href="#test" target ="_blank">Тест</a></li>
-        <li><a href="#results" target ="_blank">Результаты</a></li>
-        <li><a href="#leaderboard" target ="_blank">Рейтинг</a></li>
-        <li><a href="https://t.me/TestOfEngBot" target="_blank">Наш Телеграм бот</a></li>
-    </ul>
-    </div>
-    <div class="language-selector">
-        <div class="custom-select" id="languageSelect">
-            <div class="select-selected">Выберите язык</div>
-            <div class="select-items select-hide">
-                <div class="flag-option" data-value="ru"><img width="40px" src="./images/ru.png" alt="Русский"><span></span></div>
-                <div class="flag-option" data-value="en"><img width="40px" src="./images/en.png" alt="English"><span></span></div>
-                <div class="flag-option" data-value="uz"><img width="40px" src="./images/uz.jpg" alt="O'zbekcha"><span></span></div>
-                <div class="flag-option" data-value="krh"><img width="40px" src="./images/kk.png" alt="Qaraqalpaqsha"><span></span></div>
+        <div class="logo">
+            <img src="./images/logo.jpg" alt="Логотип">
+        </div>
+        <div class="nav">
+            <button class="burger-menu">☰</button>
+            <ul class="nav-list">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#test">Тест</a></li>
+                <li><a href="#results">Результаты</a></li>
+                <li><a href="#leaderboard">Рейтинг</a></li>
+                <li><a href="https://t.me/TestOfEngBot" target="_blank">Наш Телеграм бот</a></li>
+            </ul>
+        </div>
+        <div class="language-selector">
+            <div class="custom-select" id="languageSelect">
+                <div class="select-selected">Выберите язык</div>
+                <div class="select-items select-hide">
+                    <div class="flag-option" data-value="ru"><img width="40px" src="./images/ru2.png" alt="Русский"><span></span></div>
+                    <div class="flag-option" data-value="en"><img width="40px" src="./images/en.png" alt="English"><span></span></div>
+                    <div class="flag-option" data-value="uz"><img width="40px" src="./images/uz.jpg" alt="O'zbekcha"><span></span></div>
+                    <div class="flag-option" data-value="krh"><img width="40px" src="./images/kk.jpg" alt="Qaraqalpaqsha"><span></span></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-   
 
     <div id="one" class="section">
-         <div class="headline">
-        <h1>Тест по английскому языку</h1>
-        <p>Выберите уровень и подуровень, чтобы начать тестирование.</p>
-    </div>
-           
+        <div class="headline">
+            <h1>Тест по английскому языку</h1>
+            <p>Выберите уровень и подуровень, чтобы начать тестирование.</p>
+        </div>
         <input type="text" id="userName" placeholder="Введите ваше имя">
         <select id="level">
             <option value="">Выберите уровень</option>
@@ -55,7 +52,7 @@
         </select>
         <button id="startQuizBtn">Начать тест</button>
         <a class="result_link" href="#" id="resultsLink">Результаты</a> | 
-        <a class="top_link" href="#" id="topLink">Top</a>
+        <a class="top_link" href="#" id="topLink">Top10</a>
     </div>
 
     <div id="two" class="section hidden">
@@ -67,23 +64,23 @@
     <div id="three" class="section hidden">
         <p id="score"></p>
         <input type="text" id="searchName" placeholder="Поиск по имени" style="margin: 10px 0;">
-        <div id="resultsList"></div>
+        <div class="scroll-container">
+            <div id="resultsList"></div>
+        </div>
         <button id="showLeaderboardBtn">Показать рейтинг</button>
         <button id="backToStartBtn">Вернуться</button>
     </div>
 
     <div id="leaderboard" class="hidden">
-        <h2 id="leaderboardTitle">Рейтинг</h2>
+        <h2 class="top" id="leaderboardTitle">Рейтинг</h2>
         <div id="top10-list" class="top-container"></div>
         <button id="backToStartBtn2">Вернуться</button>
     </div>
 
     <script type="module">
-        // Импорт необходимых модулей Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
         import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-        // Конфигурация Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDgVlMxuquB1TmGZECKHDzBW8GZ_vGEO74",
             authDomain: "engtestsapp.firebaseapp.com",
@@ -95,24 +92,16 @@
             measurementId: "G-L1N9GY6EC5"
         };
 
-        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
-        // Получение экземпляра базы данных
         const database = getDatabase(app);
-        // Создание ссылки на узел 'results'
         const resultsRef = ref(database, 'results');
-        // Делаем объекты глобальными для использования в script.js
         window.database = database;
         window.resultsRef = resultsRef;
         window.push = push;
         window.onValue = onValue;
-
-        // Отладочный вывод
-        console.log('Firebase initialized:', { database, resultsRef, push, onValue });
+        console.log('Firebase initialized');
     </script>
-
-    <!-- Подключение вашего скрипта -->
-    <script src="assets/js/englishQuizQuestions.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="./assets/js/englishQuizQuestions.js" defer></script>
+    <script src="assets/js/script.js" defer></script>
 </body>
 </html>
