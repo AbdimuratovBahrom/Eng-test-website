@@ -2,7 +2,7 @@
 let levelSelect, sublevelSelect, startQuizBtn, resultsLink, topLink, sectionOne, sectionTwo, sectionThree;
 let leaderboardDiv, showLeaderboardBtn, backToStartBtn, backToStartBtn2, top10List, questionNumber, questionText;
 let optionsDiv, scoreDisplay, searchName, resultsList, title, headlineP, leaderboardTitle, languageSelect, burgerMenu;
-let navLinks;
+let navLinks, filterSublevel, leaderboardSublevel;
 
 // --- Переводы ---
 const translations = {
@@ -13,7 +13,7 @@ const translations = {
         sublevelPlaceholder: "Select sublevel",
         startQuizBtn: "Start Test",
         resultsLink: "Results",
-        topLink: "Top10",
+        topLink: "Top",
         scoreText: "Your result: ",
         searchNamePlaceholder: "Search by name",
         showLeaderboardBtn: "Show Ranking",
@@ -39,7 +39,7 @@ const translations = {
         sublevelPlaceholder: "Выберите подуровень",
         startQuizBtn: "Начать тест",
         resultsLink: "Результаты",
-        topLink: "Top10",
+        topLink: "Top",
         scoreText: "Ваш результат: ",
         searchNamePlaceholder: "Поиск по имени",
         showLeaderboardBtn: "Показать рейтинг",
@@ -229,17 +229,19 @@ function saveResult() {
     push(resultsRef, result).catch(error => console.error('Ошибка сохранения:', error));
 }
 
-// Функция отображения результатов по имени
+// Функция отображения результатов по имени с фильтром по подуровню
 function displayResultsByName() {
-    if (searchName && resultsList && database && onValue) {
+    if (searchName && resultsList && database && onValue && filterSublevel) {
         const searchValue = searchName.value.trim().toLowerCase();
+        const selectedSublevel = filterSublevel.value.toLowerCase();
         onValue(resultsRef, (snapshot) => {
             resultsList.innerHTML = '';
             const data = snapshot.val();
             if (data) {
                 Object.values(data).forEach(result => {
-                    if (result.name.toLowerCase().includes(searchValue) && result.total && result.timestamp) {
-                        resultsList.innerHTML += `<div>${result.name}: ${result.score}/${result.total} (${new Date(result.timestamp).toLocaleString()})</div>`;
+                    if (result.name.toLowerCase().includes(searchValue) && result.total && result.timestamp &&
+                        (!selectedSublevel || result.sublevel === selectedSublevel)) {
+                        resultsList.innerHTML += `<div>${result.name}: ${result.score}/${result.total} (${new Date(result.timestamp).toLocaleString()}) - ${result.sublevel.toUpperCase()}</div>`;
                     }
                 });
             }
@@ -248,20 +250,22 @@ function displayResultsByName() {
     }
 }
 
-// Функция отображения общего рейтинга
+// Функция отображения общего рейтинга с фильтром по подуровню
 function showAllLeaderboard() {
-    if (top10List && database && onValue) {
+    if (top10List && database && onValue && leaderboardSublevel) {
+        const selectedSublevel = leaderboardSublevel.value.toLowerCase();
         onValue(resultsRef, (snapshot) => {
             top10List.innerHTML = '';
             const data = snapshot.val();
             if (data) {
                 const results = Object.values(data)
-                    .filter(result => result.total && result.timestamp && !isNaN(result.score) && !isNaN(result.total))
+                    .filter(result => result.total && result.timestamp && !isNaN(result.score) && !isNaN(result.total) &&
+                        (!selectedSublevel || result.sublevel === selectedSublevel))
                     .sort((a, b) => b.score / b.total - a.score / a.total)
                     .slice(0, 10);
                 if (results.length > 0) {
                     results.forEach((result, index) => {
-                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total}</div>`;
+                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total} - ${result.sublevel.toUpperCase()}</div>`;
                     });
                 } else {
                     top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
@@ -273,17 +277,18 @@ function showAllLeaderboard() {
 
 // Функция отображения рейтинга по уровню и подуровню
 function showLeaderboard(level, sublevel) {
-    if (top10List && database && onValue) {
+    if (top10List && database && onValue && leaderboardSublevel) {
+        const selectedSublevel = leaderboardSublevel.value.toLowerCase() || sublevel.toLowerCase();
         onValue(resultsRef, (snapshot) => {
             top10List.innerHTML = '';
             const data = snapshot.val();
             if (data) {
                 const filtered = Object.values(data)
-                    .filter(r => r.level === level && r.sublevel === sublevel && r.total && !isNaN(r.score) && !isNaN(r.total));
+                    .filter(r => r.level === level && r.sublevel === selectedSublevel && r.total && !isNaN(r.score) && !isNaN(r.total));
                 const results = filtered.sort((a, b) => b.score / b.total - a.score / a.total).slice(0, 10);
                 if (results.length > 0) {
                     results.forEach((result, index) => {
-                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total}</div>`;
+                        top10List.innerHTML += `<div>${index + 1}. ${result.name}: ${result.score}/${result.total} - ${result.sublevel.toUpperCase()}</div>`;
                     });
                 } else {
                     top10List.innerHTML = `<p>${translations[currentLanguage].noLevelResults}</p>`;
@@ -525,6 +530,27 @@ function setupCustomSelect() {
     updateVisibleFlags();
 }
 
+// Обработчик изменения фильтра подуровня для результатов
+function setupSublevelFilter() {
+    if (filterSublevel) {
+        filterSublevel.addEventListener('change', () => {
+            displayResultsByName();
+        });
+    }
+}
+
+// Обработчик изменения фильтра подуровня для рейтинга
+function setupLeaderboardSublevelFilter() {
+    if (leaderboardSublevel) {
+        leaderboardSublevel.addEventListener('change', () => {
+            showAllLeaderboard();
+            if (userLevel && userSublevel) {
+                showLeaderboard(userLevel, userSublevel);
+            }
+        });
+    }
+}
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', async () => {
     // Инициализация DOM элементов
@@ -553,6 +579,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     languageSelect = document.getElementById('languageSelect');
     burgerMenu = document.querySelector('.burger-menu');
     navLinks = document.querySelectorAll('.nav-list a');
+    filterSublevel = document.getElementById('filterSublevel');
+    leaderboardSublevel = document.getElementById('leaderboardSublevel');
 
     console.log('DOM elements initialized:', { startQuizBtn, languageSelect });
 
@@ -570,6 +598,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupCustomSelect();
     setupBurgerMenu();
     setupNavLinks();
+    setupSublevelFilter();
+    setupLeaderboardSublevelFilter();
 
     document.addEventListener('click', (e) => {
         console.log('Глобальный клик:', { target: e.target.tagName, class: e.target.className, id: e.target.id });

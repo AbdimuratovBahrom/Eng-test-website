@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тест по английскому языку</title>
-    <link rel="icon" href="./assets/css/images/en.jpg" type="image/x-icon">
-   
+    <link rel="icon" href="./assets/css/images/en.png" type="image/x-icon">
     <link rel="stylesheet" href="./assets/css/main.css">
-    
-    
 </head>
 <body>
     <div class="header">
@@ -55,7 +52,7 @@
         </select>
         <button id="startQuizBtn">Начать тест</button>
         <a class="result_link" href="#" id="resultsLink">Результаты</a> | 
-        <a class="top_link" href="#" id="topLink">Top10</a>
+        <a class="top_link" href="#" id="topLink">Top</a>
     </div>
 
     <div id="two" class="section hidden">
@@ -67,6 +64,15 @@
     <div id="three" class="section hidden">
         <p id="score"></p>
         <input type="text" id="searchName" placeholder="Поиск по имени" style="margin: 10px 0;">
+        <select id="filterSublevel">
+            <option value="">Все подуровни</option>
+            <option value="a1">A1</option>
+            <option value="a2">A2</option>
+            <option value="b1">B1</option>
+            <option value="b2">B2</option>
+            <option value="c1">C1</option>
+            <option value="c2">C2</option>
+        </select>
         <div class="scroll-container">
             <div id="resultsList"></div>
         </div>
@@ -76,6 +82,15 @@
 
     <div id="leaderboard" class="hidden">
         <h2 class="top" id="leaderboardTitle">Рейтинг</h2>
+        <select id="leaderboardSublevel">
+            <option value="">Все подуровни</option>
+            <option value="a1">A1</option>
+            <option value="a2">A2</option>
+            <option value="b1">B1</option>
+            <option value="b2">B2</option>
+            <option value="c1">C1</option>
+            <option value="c2">C2</option>
+        </select>
         <div id="top10-list" class="top-container"></div>
         <button id="backToStartBtn2">Вернуться</button>
     </div>
