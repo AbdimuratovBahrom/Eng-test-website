@@ -3,9 +3,11 @@
   display: none;
 }
 body {
-  background-image: url(/images/London3.jpg);
+ background-image: url('./images/London3.jpg');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+ 
 }
 
 /* Шапка сайта */
